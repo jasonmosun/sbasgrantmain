@@ -1,5 +1,6 @@
 
 import InsideNavbar from "@/components/InsideNavbar";
+import "../globals.css" 
 
 export const metadata = { title: "SBAgrant" };
 
