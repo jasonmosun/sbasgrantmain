@@ -25,6 +25,7 @@ export default async function Home() {
   return (
     <div>
       <img src="/server down image.png" className="w-full h-screen object-contain" />
+      console.log(hey)
     </div>
     // <div className="">
       
