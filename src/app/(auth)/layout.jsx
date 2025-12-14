@@ -32,7 +32,7 @@ export default function AuthLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="text-">this is AuthLayout</div>
+        
         {children}
         
       </body>
