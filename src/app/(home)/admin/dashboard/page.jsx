@@ -49,9 +49,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <img src="/server down image.png" class="w-full h-screen object-contain" />
+      {/* <img src="/server down image.png" class="w-full h-screen object-contain" /> */}
 
-      {/* <div className="text-center text-2xl text-red-500 font-bold mt-6">Welcome to the power-house</div>
+       <div className="text-center text-2xl text-red-500 font-bold mt-6">Welcome to the power-house</div>
       <div className="bg-white p-4 rounded shadow">
         <h2 className="text-2xl font-bold mb-3 text-green-700">Pending Deposits</h2>
         {txs.length === 0 ? <div className="text-green-500">No pending deposits</div> :
@@ -89,7 +89,7 @@ export default function AdminDashboard() {
             ))}
           </div>
         }
-      </div> */}
+      </div> 
     </div>
   );
 }
