@@ -68,6 +68,7 @@ export default function Numberstat() {
         <p className="mt-4 text-center text-gray-600 max-w-2xl mx-auto text-base sm:text-lg">
           Hear from our satisfied customers about their experience with our services
         </p>
+        </div>
     </section>
   );
 }
