@@ -51,6 +51,23 @@ export default function Numberstat() {
           </p>
         </div>
       </div>
+      <div className="mx-auto max-w-7xl px-4">
+        {/* pill */}
+        <div className="flex justify-center">
+          <span className="inline-flex items-center rounded-full bg-orange-600 px-6 py-2 text-xs font-extrabold tracking-wide text-white">
+            TESTIMONIALS
+          </span>
+        </div>
+
+        {/* title */}
+        <h2 className="mt-6 text-center text-3xl sm:text-5xl font-extrabold text-[#0b1d3a]">
+          What Our Clients Say
+        </h2>
+
+        {/* subtitle */}
+        <p className="mt-4 text-center text-gray-600 max-w-2xl mx-auto text-base sm:text-lg">
+          Hear from our satisfied customers about their experience with our services
+        </p>
     </section>
   );
 }
