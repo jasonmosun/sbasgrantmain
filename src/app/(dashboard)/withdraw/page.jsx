@@ -7,11 +7,16 @@ export default function WithdrawPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem("user");
-    const u = stored ? JSON.parse(stored) : null;
-    setUser(u);
-     setLoading(false);
-  }, []);
+  fetch("/api/me")
+    .then((r) => r.json())
+    .then((j) => {
+      if (!j || j.message) return;
+      setUser(j.user || j);
+    })
+    .catch(() => {})
+    .finally(() => setLoading(false));
+}, []);
+
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -42,20 +47,20 @@ export default function WithdrawPage() {
         <p className="mb-4">Please provide your bank details to request a withdrawal.</p>
 
         <div className="grid grid-cols-2 gap-3">
-          <input name="firstName" placeholder="First Name" onChange={handleChange} className="input border border-gray-500" />
-          <input name="lastName" placeholder="Last Name" onChange={handleChange} className="input border border-gray-500" />
+          <input name="firstName" placeholder="First Name" onChange={handleChange} className="input border border-gray-500 p-5 rounded" />
+          <input name="lastName" placeholder="Last Name" onChange={handleChange} className="input border border-gray-500 p-5 rounded" />
         </div>
 
-        <input name="bankName" placeholder="Bank Name" onChange={handleChange} className="input mt-3 border border-gray-500" />
-        <input name="accountNumber" placeholder="Account Number" onChange={handleChange} className="input mt-3 border border-gray-500" />
-        <input name="routingNumber" placeholder="Routing Number" onChange={handleChange} className="input mt-3 border border-gray-500" />
+        <input name="bankName" placeholder="Bank Name" onChange={handleChange} className="input mt-3 border border-gray-500 p-5 rounded" />
+        <input name="accountNumber" placeholder="Account Number" onChange={handleChange} className="input mt-3 border border-gray-500 p-5 rounded" />
+        <input name="routingNumber" placeholder="Routing Number" onChange={handleChange} className="input mt-3 border border-gray-500 p-5 rounded" />
 
         <input
           name="amount"
           type="number"
           placeholder="Amount"
           onChange={handleChange}
-          className="input mt-3"
+          className="input mt-3 border border-gray-500 p-3 rounded"
         />
 
         <p className="text-sm text-gray-500 mt-2">
@@ -72,11 +77,11 @@ export default function WithdrawPage() {
   </button>
 )}
 
-        {disabled && (
-          <p className="text-red-500 text-sm mt-2">
-            Amount exceeds available balance
-          </p>
-        )}
+        {form.amount && Number(form.amount) > (user?.availableBalance ?? 0) && (
+  <p className="text-red-500 text-sm mt-2">
+    Amount exceeds available balance
+  </p>
+)}
       </div>
     </div>
 
