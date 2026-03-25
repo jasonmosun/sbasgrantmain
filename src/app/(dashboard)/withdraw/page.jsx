@@ -42,13 +42,13 @@ export default function WithdrawPage() {
         <p className="mb-4">Please provide your bank details to request a withdrawal.</p>
 
         <div className="grid grid-cols-2 gap-3">
-          <input name="firstName" placeholder="First Name" onChange={handleChange} className="input" />
-          <input name="lastName" placeholder="Last Name" onChange={handleChange} className="input" />
+          <input name="firstName" placeholder="First Name" onChange={handleChange} className="input border border-gray-500" />
+          <input name="lastName" placeholder="Last Name" onChange={handleChange} className="input border border-gray-500" />
         </div>
 
-        <input name="bankName" placeholder="Bank Name" onChange={handleChange} className="input mt-3" />
-        <input name="accountNumber" placeholder="Account Number" onChange={handleChange} className="input mt-3" />
-        <input name="routingNumber" placeholder="Routing Number" onChange={handleChange} className="input mt-3" />
+        <input name="bankName" placeholder="Bank Name" onChange={handleChange} className="input mt-3 border border-gray-500" />
+        <input name="accountNumber" placeholder="Account Number" onChange={handleChange} className="input mt-3 border border-gray-500" />
+        <input name="routingNumber" placeholder="Routing Number" onChange={handleChange} className="input mt-3 border border-gray-500" />
 
         <input
           name="amount"
