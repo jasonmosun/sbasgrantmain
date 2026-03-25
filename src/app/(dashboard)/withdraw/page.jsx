@@ -39,7 +39,7 @@ export default function WithdrawPage() {
     });
 
     alert("Withdrawal sent for processing,check history to know the status of your withdrawal");
-    router.push('/dashboard/dashboard')
+    router.push('/dashboard')
   }
   return (
     <div className="max-w-lg mx-auto mt-8 bg-white p-6 rounded shadow">
@@ -74,7 +74,7 @@ export default function WithdrawPage() {
   <button
     disabled={disabled}
     onClick={submit}
-    className={`btn mt-4 ${disabled ? "bg-gray-300" : "bg-blue-600 text-white p-2 rounded"}`}
+    className={`btn mt-4 ${disabled ? "bg-gray-200 p-2 rounded " : "bg-blue-600 text-white p-2 rounded"}`}
   >
     Submit Withdrawal
   </button>
