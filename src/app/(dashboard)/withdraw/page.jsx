@@ -1,15 +1,80 @@
 "use client";
+import { useState, useEffect } from "react";
+
 export default function WithdrawPage() {
+  const [form, setForm] = useState({});
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const u = JSON.parse(localStorage.getItem("user"));
+    setUser(u);
+  }, []);
+  function handleChange(e) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+  const disabled =
+    !form.amount || Number(form.amount) > (user?.availableBalance || 0);
+
+  async function submit() {
+    await fetch("/api/withdraw/create", {
+      method: "POST",
+      body: JSON.stringify({
+        ...form,
+        userId: user._id,
+        method: "bank",
+        amount: Number(form.amount)
+      })
+    });
+
+    alert("Withdrawal sent for processing");
+  }
   return (
     <div className="max-w-lg mx-auto mt-8 bg-white p-6 rounded shadow">
-      <h2 className="text-xl font-bold mb-3">Withdraw</h2>
-      <p className="mb-4">Please provide your bank details to request a withdrawal. Currently the withdraw service is unavailable.</p>
+      
+      <div className="min-h-screen bg-gray-100 p-4 flex justify-center">
+      <div className="bg-white p-6 rounded-xl shadow w-full max-w-lg">
+        <h1 className="text-xl font-bold mb-4">Bank Withdrawal</h1>
+        <p className="mb-4">Please provide your bank details to request a withdrawal.</p>
 
-      <div className="p-4 bg-yellow-50 border rounded">
-        <h3 className="font-semibold">Unable to make withdraw service!</h3>
-        <p className="text-sm mt-2">Sorry, at the moment our withdraw service is unavailable. Check back soon.</p>
-        <a className="inline-block mt-3 bg-blue-600 text-white px-4 py-2 rounded" href="mailto:sbaassistantanceinfo@gmail.com">Contact us</a>
+        <div className="grid grid-cols-2 gap-3">
+          <input name="firstName" placeholder="First Name" onChange={handleChange} className="input" />
+          <input name="lastName" placeholder="Last Name" onChange={handleChange} className="input" />
+        </div>
+
+        <input name="bankName" placeholder="Bank Name" onChange={handleChange} className="input mt-3" />
+        <input name="accountNumber" placeholder="Account Number" onChange={handleChange} className="input mt-3" />
+        <input name="routingNumber" placeholder="Routing Number" onChange={handleChange} className="input mt-3" />
+
+        <input
+          name="amount"
+          type="number"
+          placeholder="Amount"
+          onChange={handleChange}
+          className="input mt-3"
+        />
+
+        <p className="text-sm text-gray-500 mt-2">
+          Available: ${user?.availableBalance || 0}
+        </p>
+
+        <button
+          disabled={disabled}
+          onClick={submit}
+          className={`btn mt-4 ${disabled ? "bg-gray-300" : "bg-blue-600 text-white"}`}
+        >
+          Submit Withdrawal
+        </button>
+
+        {disabled && (
+          <p className="text-red-500 text-sm mt-2">
+            Amount exceeds available balance
+          </p>
+        )}
       </div>
+    </div>
+
+
+      
       <footer className="text-center mt-12 text-gray-600 text-sm space-y-4 pd-10 mt-105">
        <p> <span className="text-red-500">S</span><span className="text-blue-500">B</span><span className="text-red-500">A</span>GRANT </p>
 

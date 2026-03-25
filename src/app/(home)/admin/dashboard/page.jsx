@@ -5,11 +5,16 @@ import { useEffect, useState } from "react";
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [txs, setTxs] = useState([]);
+  const [withdrawals, setWithdrawals] = useState([]);
 
   useEffect(() => {
     fetch("/api/admin/users").then(r => r.json()).then(j => { if (j.users) setUsers(j.users); });
     fetch("/api/admin/pending-deposits").then(r => r.json()).then(j => { if (j.txs) setTxs(j.txs); });
+     fetch("/api/admin/pending-withdrawals")
+  .then(r => r.json())
+  .then(j => { if (j.withdrawals) setWithdrawals(j.withdrawals); });
   }, []);
+ 
 
   async function saveBalance(userId, idx) {
     const u = users[idx];
@@ -46,6 +51,27 @@ export default function AdminDashboard() {
       setTxs(j1.txs || []);
     } else alert(j.message || "Error");
   }
+  async function confirmWithdraw(withdrawalId) {
+  const res = await fetch("/api/confirm-withdraw", {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify({ withdrawalId }),
+    headers: { "Content-Type": "application/json" }
+  });
+
+  const j = await res.json();
+
+  if (res.ok) {
+    alert("Withdrawal confirmed");
+
+    // refresh withdrawals
+    const r = await fetch("/api/admin/pending-withdrawals");
+    const j2 = await r.json();
+    setWithdrawals(j2.withdrawals || []);
+  } else {
+    alert(j.message || "Error");
+  }
+}
 
   return (
     <div className="space-y-6">
@@ -69,6 +95,47 @@ export default function AdminDashboard() {
             ))}
           </ul>}
       </div>
+      <div className="bg-white p-4 rounded shadow">
+  <h2 className="text-2xl font-bold mb-3 text-red-600">
+    Pending Withdrawals
+  </h2>
+
+  {withdrawals.length === 0 ? (
+    <div className="text-red-400">No pending withdrawals</div>
+  ) : (
+    <ul>
+      {withdrawals.map(w => (
+        <li
+          key={w._id}
+          className="border border-red-400 shadow p-3 mt-3 flex justify-between"
+        >
+          <div>
+            <div className="font-semibold">
+              {w.userEmail || "User"}
+            </div>
+
+            <div className="text-sm text-gray-500">
+              ${w.amount} USD • {new Date(w.createdAt).toLocaleString()}
+            </div>
+
+            <div className="text-xs text-gray-400 mt-1">
+              {w.bankName} • {w.accountNumber}
+            </div>
+          </div>
+
+          <div>
+            <button
+              className="bg-red-600 text-white px-3 py-1 rounded"
+              onClick={() => confirmWithdraw(w._id)}
+            >
+              Confirm
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
 
       <div className="bg-white p-4 rounded shadow">
         <h2 className="text-xl font-bold mb-3 text-blue-500">Users</h2>
