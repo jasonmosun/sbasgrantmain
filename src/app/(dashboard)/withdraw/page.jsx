@@ -28,7 +28,7 @@ export default function WithdrawPage() {
   Number(form.amount) > (user?.availableBalance ?? 0);
 
   async function submit() {
-    await fetch("/api/withdraw/create", {
+    await fetch("/api/withdraw", {
       method: "POST",
       body: JSON.stringify({
         ...form,
