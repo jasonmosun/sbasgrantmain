@@ -1,6 +1,6 @@
 // import dbConnect from "@/lib/mongodb";
 import Transaction from "@/models/Transaction";
-import Withdrawal from "@/models/withdrawal";
+import Withdrawal from "@/models/Withdrawal";
 import { jwtVerify } from "jose";
 
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
@@ -17,7 +17,7 @@ export async function GET(req) {
     }
 
     const { payload } = await jwtVerify(token, SECRET);
-    const userId = payload.id;
+    const userId = payload.id; 
 
     await dbConnect();
 
