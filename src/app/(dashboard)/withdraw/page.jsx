@@ -4,16 +4,21 @@ import { useState, useEffect } from "react";
 export default function WithdrawPage() {
   const [form, setForm] = useState({});
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const u = JSON.parse(localStorage.getItem("user"));
+    const stored = localStorage.getItem("user");
+    const u = stored ? JSON.parse(stored) : null;
     setUser(u);
+     setLoading(false);
   }, []);
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
   const disabled =
-    !form.amount || Number(form.amount) > (user?.availableBalance || 0);
+  loading ||
+  !form.amount ||
+  Number(form.amount) > (user?.availableBalance ?? 0);
 
   async function submit() {
     await fetch("/api/withdraw/create", {
@@ -54,16 +59,18 @@ export default function WithdrawPage() {
         />
 
         <p className="text-sm text-gray-500 mt-2">
-          Available: ${user?.availableBalance || 0}
-        </p>
+  Available: {loading ? "Loading..." : `$${user?.availableBalance ?? 0}`}
+     </p>
 
-        <button
-          disabled={disabled}
-          onClick={submit}
-          className={`btn mt-4 ${disabled ? "bg-gray-300" : "bg-blue-600 text-white"}`}
-        >
-          Submit Withdrawal
-        </button>
+        {!loading && (
+  <button
+    disabled={disabled}
+    onClick={submit}
+    className={`btn mt-4 ${disabled ? "bg-gray-300" : "bg-blue-600 text-white"}`}
+  >
+    Submit Withdrawal
+  </button>
+)}
 
         {disabled && (
           <p className="text-red-500 text-sm mt-2">
