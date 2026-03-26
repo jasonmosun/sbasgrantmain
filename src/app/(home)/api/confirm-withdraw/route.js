@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/mongodb";
-import Withdrawal from "@/models/Withdrawal";
+import Transaction from "@/models/Transaction";
 import User from "@/models/User";
 import { jwtVerify } from "jose";
 
@@ -9,53 +9,51 @@ export async function POST(req) {
   try {
     // ✅ ADMIN AUTH
     const adminToken = req.cookies.get("admin_token")?.value;
+
     if (!adminToken) {
       return new Response(JSON.stringify({ message: "Unauthorized" }), { status: 401 });
     }
 
     await jwtVerify(adminToken, SECRET);
 
-    const { withdrawalId } = await req.json();
+    // ✅ FIXED: use txId
+    const { txId } = await req.json();
 
-    if (!withdrawalId) {
-      return new Response(JSON.stringify({ message: "No withdrawal ID" }), { status: 400 });
+    if (!txId) {
+      return new Response(JSON.stringify({ message: "No transaction ID" }), { status: 400 });
     }
 
     await dbConnect();
 
-    // ✅ FIND WITHDRAWAL
-    const withdrawal = await Withdrawal.findById(withdrawalId);
+    // ✅ FIND TRANSACTION
+    const tx = await Transaction.findById(txId);
 
-    if (!withdrawal) {
-      return new Response(JSON.stringify({ message: "Withdrawal not found" }), { status: 404 });
+    if (!tx) {
+      return new Response(JSON.stringify({ message: "Transaction not found" }), { status: 404 });
     }
 
-    if (withdrawal.status !== "pending") {
+    if (tx.status !== "pending") {
       return new Response(JSON.stringify({ message: "Already processed" }), { status: 400 });
     }
 
+    if (tx.type !== "withdraw") {
+      return new Response(JSON.stringify({ message: "Not a withdrawal" }), { status: 400 });
+    }
+
     // ✅ FIND USER
-    const user = await User.findById(withdrawal.userId);
+    const user = await User.findById(tx.user);
 
     if (!user) {
       return new Response(JSON.stringify({ message: "User not found" }), { status: 404 });
     }
 
-    // ✅ CHECK BALANCE
-    if (user.availableBalance < withdrawal.amount) {
-      return new Response(JSON.stringify({ message: "Insufficient balance" }), { status: 400 });
-    }
-
-    // ✅ UPDATE USER BALANCE
-    user.availableBalance -= withdrawal.amount;
-    user.totalWithdraw += withdrawal.amount;
-
+    // ✅ UPDATE USER TOTAL WITHDRAW ONLY (DO NOT deduct again)
+    user.totalWithdraw += tx.amountUSD;
     await user.save();
 
-    // ✅ UPDATE WITHDRAWAL
-    await Transaction.findByIdAndUpdate(txId, {
-  status: "confirmed"
-});
+    // ✅ CONFIRM TRANSACTION
+    tx.status = "confirmed";
+    await tx.save();
 
     return new Response(JSON.stringify({ message: "Withdrawal approved" }), { status: 200 });
 

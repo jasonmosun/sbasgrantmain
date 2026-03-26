@@ -51,11 +51,11 @@ export default function AdminDashboard() {
       setTxs(j1.txs || []);
     } else alert(j.message || "Error");
   }
-  async function confirmWithdraw(withdrawalId) {
+  async function confirmWithdraw(txId) {
   const res = await fetch("/api/confirm-withdraw", {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify({ withdrawalId }),
+    body: JSON.stringify({ txId }),
     headers: { "Content-Type": "application/json" }
   });
 
@@ -115,18 +115,18 @@ export default function AdminDashboard() {
             </div>
 
             <div className="text-sm text-gray-500">
-              ${w.amount} USD • {new Date(w.createdAt).toLocaleString()}
+              ${w.amountUSD} USD • {new Date(w.createdAt).toLocaleString()}
             </div>
 
             <div className="text-xs text-gray-400 mt-1">
-              {w.bankName} • {w.accountNumber}
+              {w.metadata?.bankName} • {w.metadata?.accountNumber}
             </div>
           </div>
 
           <div>
             <button
               className="bg-red-600 text-white px-3 py-1 rounded"
-              onClick={() => confirmWithdraw(w._id)}
+              onClick={() => confirmWithdraw( txId)}
             >
               Confirm
             </button>
