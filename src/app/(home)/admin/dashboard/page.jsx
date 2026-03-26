@@ -126,7 +126,7 @@ export default function AdminDashboard() {
           <div>
             <button
               className="bg-red-600 text-white px-3 py-1 rounded"
-              onClick={() => confirmWithdraw( txId)}
+              onClick={() => confirmWithdraw( w._id)}
             >
               Confirm
             </button>

@@ -38,6 +38,7 @@ export async function POST(req) {
     // ✅ CREATE TRANSACTION ONLY
     const tx = await Transaction.create({
       user: user._id,
+      userEmail: user.email,
       type: "withdraw",
       amountUSD: amount,
       status: "pending",
