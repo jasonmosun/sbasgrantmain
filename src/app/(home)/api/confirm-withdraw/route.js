@@ -53,8 +53,9 @@ export async function POST(req) {
     await user.save();
 
     // ✅ UPDATE WITHDRAWAL
-    withdrawal.status = "confirmed";
-    await withdrawal.save();
+    await Transaction.findByIdAndUpdate(txId, {
+  status: "confirmed"
+});
 
     return new Response(JSON.stringify({ message: "Withdrawal approved" }), { status: 200 });
 

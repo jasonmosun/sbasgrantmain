@@ -1,5 +1,4 @@
 import dbConnect from "@/lib/mongodb";
-import Withdrawal from "@/models/Withdrawal";
 import User from "@/models/User";
 import { jwtVerify } from "jose";
 
@@ -17,14 +16,16 @@ export async function GET(req) {
 
     await dbConnect();
 
-    const withdrawals = await Withdrawal.find({ status: "pending" })
-      .sort({ createdAt: -1 })
+    const withdrawals = await Transaction.find({
+  type: "withdraw",
+  status: "pending"
+}).sort({ createdAt: -1 })
       .lean();
 
     // ✅ attach user email (same pattern as yours)
     const withUser = await Promise.all(
       withdrawals.map(async (w) => {
-        const u = await User.findById(w.userId).lean();
+        const u = await User.findById(w.user).lean();
         return {
           ...w,
           userEmail: u?.email || "Unknown",

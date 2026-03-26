@@ -25,14 +25,14 @@ export default function Transactions() {
               {/* this for deposit only */}
               {/* <div className={`${tx.status === "confirmed" ? "text-green-600" : "text-yellow-600"} font-bold`}>+{tx.amountUSD} USD</div> */}
               <div
-                className={`font-bold ${tx.type === "withdrawal"
+                className={`font-bold ${tx.type === "withdraw"
                     ? "text-red-600"
                     : tx.status === "confirmed"
                       ? "text-green-600"
                       : "text-yellow-600"
                   }`}
               >
-                {tx.type === "withdrawal" ? "-" : "+"}
+                {tx.type === "withdraw" ? "-" : "+"}
                 {tx.amountUSD} USD
               </div>
             </li>
